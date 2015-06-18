@@ -141,19 +141,19 @@ class TestIntegration(TestCase):
         name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
         priv_value = Name(name_value=priv_name_value, name_type=name_type)
         pub_value = Name(name_value=pub_name_value, name_type=name_type)
-        priv_name = PrivateKeyTemplateAttribute(attribute_name=name,
-                                                attribute_value=priv_value)
-        pub_name = PublicKeyTemplateAttribute(attribute_name=name,
-                                              attribute_value=pub_value)
+        priv_name = Attribute(attribute_name=name, attribute_value=priv_value)
+        pub_name = Attribute(attribute_name=name, attribute_value=pub_value)
+
         private_key_attributes = [algorithm, usage_mask, key_length_obj,
                                   priv_name]
         public_key_attributes = [algorithm, usage_mask, key_length_obj,
                                  pub_name]
 
-        priv_template_attributes = TemplateAttribute(attributes=
-                                                     private_key_attributes)
-        pub_template_attributes = TemplateAttribute(attributes=
-                                                    public_key_attributes)
+        priv_template_attributes = PrivateKeyTemplateAttribute(
+            attributes=private_key_attributes)
+        pub_template_attributes = PublicKeyTemplateAttribute(
+            attributes=public_key_attributes)
+
 
 
         # TODO: Remove trace
