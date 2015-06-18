@@ -44,6 +44,8 @@ from kmip.core.objects import KeyBlock
 from kmip.core.objects import KeyMaterial
 from kmip.core.objects import KeyValue
 from kmip.core.objects import TemplateAttribute
+from kmip.core.objects import PrivateKeyTemplateAttribute
+from kmip.core.objects import PublicKeyTemplateAttribute
 
 from kmip.core.misc import QueryFunction
 
@@ -146,14 +148,14 @@ class TestIntegration(TestCase):
         public_key_attributes = [algorithm, usage_mask, key_length_obj,
                                  pub_name]
 
-        priv_template_attributes = TemplateAttribute(attributes=
+        priv_template_attributes = PrivateKeyTemplateAttribute(attributes=
                                                     private_key_attributes)
-        pub_template_attributes = TemplateAttribute(attributes=
+        pub_template_attributes = PublicKeyTemplateAttribute(attributes=
                                                     public_key_attributes)
 
         return self.client.create_key_pair(private_key_template_attribute=
                                            priv_template_attributes,
-                                           public_key_template_attribute= 
+                                           public_key_template_attribute=
                                            pub_template_attributes)
 
     def _check_result_status(self, result, result_status_type,
