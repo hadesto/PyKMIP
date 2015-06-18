@@ -480,3 +480,28 @@ class TestIntegration(TestCase):
         message = utils.build_er_error(result.result_reason.__class__,
                                        'value', expected, observed)
         self.assertEqual(expected, observed, message)
+
+
+    # def test_private_key_create(self):
+    #     pass
+    #
+    # def test_private_key_register(self):
+    #     pass
+    #
+    # def test_private_key_get(self):
+    #     pass
+    #
+    # def test_private_key_destroy(self):
+    #     pass
+    #
+    # def test_public_key_create(self):
+    #     pass
+    #
+    # def test_public_key_register(self):
+    #     pass
+    #
+    # def test_public_key_get(self):
+    #     pass
+    #
+    # def test_public_key_destroy(self):
+    #     pass
