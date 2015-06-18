@@ -148,10 +148,13 @@ class TestIntegration(TestCase):
         public_key_attributes = [algorithm, usage_mask, key_length_obj,
                                  pub_name]
 
-        priv_template_attributes = PrivateKeyTemplateAttribute(attributes=
-                                                    private_key_attributes)
-        pub_template_attributes = PublicKeyTemplateAttribute(attributes=
-                                                    public_key_attributes)
+        priv_template_attributes = PrivateKeyTemplateAttribute(
+            attributes=private_key_attributes)
+        pub_template_attributes = PublicKeyTemplateAttribute(
+            attributes=public_key_attributes)
+
+        # TODO: Remove trace
+        pytest.set_trace()
 
         return self.client.create_key_pair(private_key_template_attribute=
                                            priv_template_attributes,
