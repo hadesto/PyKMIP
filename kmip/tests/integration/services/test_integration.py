@@ -138,8 +138,10 @@ class TestIntegration(TestCase):
         name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
         value = Name(name_value=name_value, name_type=name_type)
         name = Attribute(attribute_name=name, attribute_value=value)
-        private_key_attributes = [algorithm, usage_mask, key_length_obj, name]
-        public_key_attributes = [algorithm, usage_mask, key_length_obj, name]
+        private_key_attributes = [algorithm, usage_mask, key_length_obj,
+                                  name + " Private"]
+        public_key_attributes = [algorithm, usage_mask, key_length_obj,
+                                 name + " Public"]
 
         priv_template_attributes = TemplateAttribute(attributes=
                                                     private_key_attributes)
@@ -529,8 +531,8 @@ class TestIntegration(TestCase):
         Test that private asymmetrci keys are properly created
         :return:
         """
-        key_name = 'Integration Test - Create Private Key'
-        result = self._create_private_key(key_name=key_name)
+        key_name = 'Integration Test - Create Key Pair -'
+        result = self._create_key_pair(key_name=key_name)
 
         # TODO: Remove trace
         pytest.set_trace()
