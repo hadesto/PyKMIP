@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import pytest
 import logging
 from testtools import TestCase
 
@@ -527,6 +528,9 @@ class TestIntegration(TestCase):
         key_name = 'Integration Test - Create Private Key'
         result = self._create_private_key(key_name=key_name)
 
+        # TODO: Remove trace
+        pytest.set_trace()
+        
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
         self._check_object_type(result.object_type.enum, ObjectType,
                                 ObjectType.PRIVATE_KEY)
