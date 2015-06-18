@@ -17,6 +17,8 @@ import logging.config
 import os
 import sys
 
+exec(open('kmip/version.py').read())
+
 path = os.path.join(os.path.dirname(__file__), 'logconfig.ini')
 
 if os.path.exists(path):
@@ -36,7 +38,7 @@ else:
             },
             'handlers': {
                 'consoleHandler': {
-                    'level': 'DEBUG',
+                    'level': 'INFO',
                     'class': 'logging.StreamHandler',
                     'formatter': 'simpleFormatter',
                     'stream': sys.stdout
@@ -44,7 +46,7 @@ else:
             },
             'loggers': {
                 'root': {
-                    'level': 'DEBUG',
+                    'level': 'INFO',
                     'handlers': ['consoleHandler']
                 }
             }
