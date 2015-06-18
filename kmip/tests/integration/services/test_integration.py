@@ -46,6 +46,7 @@ from kmip.core.objects import KeyValue
 from kmip.core.objects import TemplateAttribute
 from kmip.core.objects import PrivateKeyTemplateAttribute
 from kmip.core.objects import PublicKeyTemplateAttribute
+from kmip.core.objects import CommonTemplateAttribute
 
 from kmip.core.misc import QueryFunction
 
