@@ -107,6 +107,43 @@ class TestIntegration(TestCase):
         return self.client.create(object_type, template_attribute,
                                   credential=None)
 
+    def _create_private_key(self, key_name=None):
+        """
+        Helper function for creating private keys. Used any time a key
+        needs to be created.
+        :param key_name: name of the key to be created
+        :return: returns the result of the "create key" operation as
+        provided by the KMIP appliance
+        """
+        object_type = ObjectType.PRIVATE_KEY
+        attribute_type = AttributeType.CRYPTOGRAPHIC_ALGORITHM
+        algorithm = self.attr_factory.create_attribute(attribute_type,
+                                                       CryptoAlgorithmEnum.AES)
+        mask_flags = [CryptographicUsageMask.ENCRYPT,
+                      CryptographicUsageMask.DECRYPT]
+        attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
+        usage_mask = self.attr_factory.create_attribute(attribute_type,
+                                                        mask_flags)
+        key_length = 128
+        attribute_type = AttributeType.CRYPTOGRAPHIC_LENGTH
+        key_length_obj = self.attr_factory.create_attribute(attribute_type,
+                                                            key_length)
+        name = Attribute.AttributeName('Name')
+
+        if key_name is None:
+            key_name = 'Integration Test - Key'
+
+        name_value = Name.NameValue(key_name)
+
+        name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
+        value = Name(name_value=name_value, name_type=name_type)
+        name = Attribute(attribute_name=name, attribute_value=value)
+        attributes = [algorithm, usage_mask, key_length_obj, name]
+        template_attribute = TemplateAttribute(attributes=attributes)
+
+        return self.client.create(object_type, template_attribute,
+                                  credential=None)
+
     def _check_result_status(self, result, result_status_type,
                              result_status_value):
         """
@@ -482,9 +519,24 @@ class TestIntegration(TestCase):
         self.assertEqual(expected, observed, message)
 
 
-    # def test_private_key_create(self):
-    #     pass
-    #
+    def test_private_key_create(self):
+        """
+        Test that private asymmetrci keys are properly created
+        :return:
+        """
+        key_name = 'Integration Test - Create Private Key'
+        result = self._create_private_key(key_name=key_name)
+
+        self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
+        self._check_object_type(result.object_type.enum, ObjectType,
+                                ObjectType.PRIVATE_KEY)
+        self._check_uuid(result.uuid.value, str)
+
+        self.logger.info('Destroying key: ' + key_name + '\n With UUID: ' +
+                         result.uuid.value)
+
+        result = self.client.destroy(result.uuid.value)
+        self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
     # def test_private_key_register(self):
     #     pass
     #
