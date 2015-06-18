@@ -46,7 +46,6 @@ from kmip.core.objects import KeyValue
 from kmip.core.objects import TemplateAttribute
 from kmip.core.objects import PrivateKeyTemplateAttribute
 from kmip.core.objects import PublicKeyTemplateAttribute
-from kmip.core.objects import CommonTemplateAttribute
 
 from kmip.core.misc import QueryFunction
 
@@ -144,25 +143,20 @@ class TestIntegration(TestCase):
         pub_value = Name(name_value=pub_name_value, name_type=name_type)
         priv_name = Attribute(attribute_name=name, attribute_value=priv_value)
         pub_name = Attribute(attribute_name=name, attribute_value=pub_value)
-
         private_key_attributes = [algorithm, usage_mask, key_length_obj,
                                   priv_name]
         public_key_attributes = [algorithm, usage_mask, key_length_obj,
                                  pub_name]
 
-        common = CommonTemplateAttribute(attributes=private_key_attributes)
         priv_template_attributes = PrivateKeyTemplateAttribute(
             attributes=private_key_attributes)
         pub_template_attributes = PublicKeyTemplateAttribute(
             attributes=public_key_attributes)
 
-
-
         # TODO: Remove trace
         pytest.set_trace()
 
-        return self.client.create_key_pair(common_template_attribute=common,
-                                           private_key_template_attribute=
+        return self.client.create_key_pair(private_key_template_attribute=
                                            priv_template_attributes,
                                            public_key_template_attribute=
                                            pub_template_attributes)
