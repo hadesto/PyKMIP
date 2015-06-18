@@ -151,7 +151,9 @@ class TestIntegration(TestCase):
         pub_template_attributes = TemplateAttribute(attributes=
                                                     public_key_attributes)
 
-        return self.client.create_key_pair(priv_template_attributes,
+        return self.client.create_key_pair(private_key_template_attribute=
+                                           priv_template_attributes,
+                                           public_key_template_attribute= 
                                            pub_template_attributes)
 
     def _check_result_status(self, result, result_status_type,
