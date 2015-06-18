@@ -108,15 +108,14 @@ class TestIntegration(TestCase):
         return self.client.create(object_type, template_attribute,
                                   credential=None)
 
-    def _create_private_key(self, key_name=None):
+    def _create_key_pair(self, key_name=None):
         """
-        Helper function for creating private keys. Used any time a key
-        needs to be created.
+        Helper function for creating private and public keys. Used any time
+        a key pair needs to be created.
         :param key_name: name of the key to be created
         :return: returns the result of the "create key" operation as
         provided by the KMIP appliance
         """
-        object_type = ObjectType.PRIVATE_KEY
         attribute_type = AttributeType.CRYPTOGRAPHIC_ALGORITHM
         algorithm = self.attr_factory.create_attribute(attribute_type,
                                                        CryptoAlgorithmEnum.AES)
@@ -139,11 +138,16 @@ class TestIntegration(TestCase):
         name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
         value = Name(name_value=name_value, name_type=name_type)
         name = Attribute(attribute_name=name, attribute_value=value)
-        attributes = [algorithm, usage_mask, key_length_obj, name]
-        template_attribute = TemplateAttribute(attributes=attributes)
+        private_key_attributes = [algorithm, usage_mask, key_length_obj, name]
+        public_key_attributes = [algorithm, usage_mask, key_length_obj, name]
 
-        return self.client.create(object_type, template_attribute,
-                                  credential=None)
+        priv_template_attributes = TemplateAttribute(attributes=
+                                                    private_key_attributes)
+        pub_template_attributes = TemplateAttribute(attributes=
+                                                    public_key_attributes)
+
+        return self.client.create_key_pair(priv_template_attributes,
+                                           pub_template_attributes)
 
     def _check_result_status(self, result, result_status_type,
                              result_status_value):
@@ -530,7 +534,7 @@ class TestIntegration(TestCase):
 
         # TODO: Remove trace
         pytest.set_trace()
-        
+
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
         self._check_object_type(result.object_type.enum, ObjectType,
                                 ObjectType.PRIVATE_KEY)
