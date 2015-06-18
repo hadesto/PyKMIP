@@ -133,15 +133,18 @@ class TestIntegration(TestCase):
         if key_name is None:
             key_name = 'Integration Test - Key'
 
-        name_value = Name.NameValue(key_name)
+        priv_name_value = Name.NameValue(key_name + " Private")
+        pub_name_value = Name.NameValue(key_name + " Public")
 
         name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
-        value = Name(name_value=name_value, name_type=name_type)
-        name = Attribute(attribute_name=name, attribute_value=value)
+        priv_value = Name(name_value=priv_name_value, name_type=name_type)
+        pub_value = Name(name_value=pub_name_value, name_type=name_type)
+        priv_name = Attribute(attribute_name=name, attribute_value=priv_value)
+        pub_name = Attribute(attribute_name=name, attribute_value=pub_value)
         private_key_attributes = [algorithm, usage_mask, key_length_obj,
-                                  name + " Private"]
+                                  priv_name]
         public_key_attributes = [algorithm, usage_mask, key_length_obj,
-                                 name + " Public"]
+                                 pub_name]
 
         priv_template_attributes = TemplateAttribute(attributes=
                                                     private_key_attributes)
