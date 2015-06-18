@@ -14,7 +14,6 @@
 # under the License.
 
 import logging
-import pytest
 from testtools import TestCase
 
 from kmip.core.attributes import CryptographicAlgorithm
@@ -316,11 +315,6 @@ class TestIntegration(TestCase):
         self.logger.info('Destroying key: ' + key_name + '\n With UUID: ' +
                          result.uuid.value)
 
-        # TODO: Remove trace
-        pytest.set_trace()
-
-        # TODO: Add a result check for the destroy functionality. We want to
-        #  make sure that the key was properly destroyed.
         result = self.client.destroy(result.uuid.value)
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
@@ -370,8 +364,6 @@ class TestIntegration(TestCase):
 
         result = self.client.register(object_type, template_attribute, secret,
                                       credential=None)
-        # TODO: Remove trace
-        pytest.set_trace()
 
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
         self._check_uuid(result.uuid.value, str)
@@ -421,9 +413,6 @@ class TestIntegration(TestCase):
 
         result = self.client.get(uuid=uuid, credential=None)
 
-        # TODO: Remove trace
-        pytest.set_trace()
-
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
         self._check_object_type(result.object_type.enum, ObjectType,
                                 ObjectType.SYMMETRIC_KEY)
@@ -454,9 +443,6 @@ class TestIntegration(TestCase):
 
         # Verify the secret was created
         result = self.client.get(uuid=uuid, credential=None)
-
-        # TODO: Remove trace
-        pytest.set_trace()
 
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
         self._check_object_type(result.object_type.enum, ObjectType,
@@ -494,28 +480,3 @@ class TestIntegration(TestCase):
         message = utils.build_er_error(result.result_reason.__class__,
                                        'value', expected, observed)
         self.assertEqual(expected, observed, message)
-
-
-    # def test_private_key_create(self):
-    #     pass
-    #
-    # def test_private_key_register(self):
-    #     pass
-    #
-    # def test_private_key_get(self):
-    #     pass
-    #
-    # def test_private_key_destroy(self):
-    #     pass
-    #
-    # def test_public_key_create(self):
-    #     pass
-    #
-    # def test_public_key_register(self):
-    #     pass
-    #
-    # def test_public_key_get(self):
-    #     pass
-    #
-    # def test_public_key_destroy(self):
-    #     pass
