@@ -138,18 +138,17 @@ class TestIntegration(TestCase):
 
         priv_name_value = Name.NameValue(key_name + " Private")
         pub_name_value = Name.NameValue(key_name + " Public")
-
         name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
         priv_value = Name(name_value=priv_name_value, name_type=name_type)
         pub_value = Name(name_value=pub_name_value, name_type=name_type)
         priv_name = Attribute(attribute_name=name, attribute_value=priv_value)
         pub_name = Attribute(attribute_name=name, attribute_value=pub_value)
-        private_key_attributes = [algorithm, usage_mask, key_length_obj,
-                                  priv_name]
-        public_key_attributes = [algorithm, usage_mask, key_length_obj,
-                                 pub_name]
 
-        common = CommonTemplateAttribute(attributes=private_key_attributes)
+        common_attributes = [algorithm, usage_mask, key_length_obj]
+        private_key_attributes = [priv_name]
+        public_key_attributes = [pub_name]
+
+        common = CommonTemplateAttribute(attributes=common_attributes)
         priv_template_attributes = PrivateKeyTemplateAttribute(
             attributes=private_key_attributes)
         pub_template_attributes = PublicKeyTemplateAttribute(
@@ -540,9 +539,9 @@ class TestIntegration(TestCase):
         self.assertEqual(expected, observed, message)
 
 
-    def test_private_key_create(self):
+    def test_key_pair_create(self):
         """
-        Test that private asymmetrci keys are properly created
+        Test that private asymmetric keys are properly created
         :return:
         """
         key_name = 'Integration Test - Create Key Pair -'
@@ -552,15 +551,22 @@ class TestIntegration(TestCase):
         pytest.set_trace()
 
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
-        self._check_object_type(result.object_type.enum, ObjectType,
-                                ObjectType.PRIVATE_KEY)
-        self._check_uuid(result.uuid.value, str)
+
+        # Check UUID value for Private key
+        self._check_uuid(result.private_key_uuid.value, str)
+        # Check UUID value for Public key
+        self._check_uuid(result.public_key_uuid.value, str)
 
         self.logger.info('Destroying key: ' + key_name + '\n With UUID: ' +
                          result.uuid.value)
 
-        result = self.client.destroy(result.uuid.value)
+        result = self.client.destroy(result.private_key_uuid.value)
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
+        result = self.client.destroy(result.public_key_uuid.value)
+        self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
+
+
+
     # def test_private_key_register(self):
     #     pass
     #
