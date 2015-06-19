@@ -557,11 +557,13 @@ class TestIntegration(TestCase):
         # Check UUID value for Public key
         self._check_uuid(result.public_key_uuid.value, str)
 
-        self.logger.info('Destroying key: ' + key_name + '\n With UUID: ' +
-                         result.uuid.value)
-
+        self.logger.info('Destroying key: ' + key_name + ' Private'
+                         + '\n With UUID: ' + result.private_key_uuid.value)
         result = self.client.destroy(result.private_key_uuid.value)
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
+
+        self.logger.info('Destroying key: ' + key_name + ' Public'
+                         + '\n With UUID: ' + result.public_key_uuid.value)
         result = self.client.destroy(result.public_key_uuid.value)
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
