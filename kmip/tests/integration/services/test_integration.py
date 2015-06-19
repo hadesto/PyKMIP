@@ -120,13 +120,13 @@ class TestIntegration(TestCase):
         """
         attribute_type = AttributeType.CRYPTOGRAPHIC_ALGORITHM
         algorithm = self.attr_factory.create_attribute(attribute_type,
-                                                       CryptoAlgorithmEnum.AES)
+                                                       CryptoAlgorithmEnum.RSA)
         mask_flags = [CryptographicUsageMask.ENCRYPT,
                       CryptographicUsageMask.DECRYPT]
         attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
         usage_mask = self.attr_factory.create_attribute(attribute_type,
                                                         mask_flags)
-        key_length = 128
+        key_length = 2048
         attribute_type = AttributeType.CRYPTOGRAPHIC_LENGTH
         key_length_obj = self.attr_factory.create_attribute(attribute_type,
                                                             key_length)
