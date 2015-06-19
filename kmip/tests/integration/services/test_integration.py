@@ -51,6 +51,8 @@ from kmip.core.objects import CommonTemplateAttribute
 from kmip.core.misc import QueryFunction
 
 from kmip.core.secrets import SymmetricKey
+from kmip.core.secrets import PrivateKey
+from kmip.core.secrets import PublicKey
 
 import kmip.core.utils as utils
 
@@ -561,18 +563,58 @@ class TestIntegration(TestCase):
                          + '\n With UUID: ' + result.private_key_uuid.value)
         destroy_result = self.client.destroy(result.private_key_uuid.value)
 
-        # TODO: Remove trace
-        pytest.set_trace()
-
-        self._check_result_status(destroy_result, ResultStatus, ResultStatus.SUCCESS)
+        self._check_result_status(destroy_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
 
         self.logger.info('Destroying key: ' + key_name + ' Public'
                          + '\n With UUID: ' + result.public_key_uuid.value)
         destroy_result = self.client.destroy(result.public_key_uuid.value)
-        self._check_result_status(destroy_result, ResultStatus, 
+        self._check_result_status(destroy_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
+    def test_key_pair_get(self):
+        """
+        Tests that key pair data can be retrieved from the appliance
+        :return:
+        """
+        key_name = 'Integration Test - Get Key Pair -'
+        result = self._create_key_pair(key_name=key_name)
 
+        priv_key_uuid = result.private_key_uuid.value
+        pub_key_uuid = result.public_key_uuid.value
+
+        priv_key_result = self.client.get(uuid=priv_key_uuid, credential=None)
+        pub_key_result = self.client.get(uuid=pub_key_uuid, credential=None)
+
+        self._check_result_status(priv_key_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+        self._check_object_type(priv_key_result.object_type.enum, ObjectType,
+                                ObjectType.PRIVATE_KEY)
+        self._check_uuid(priv_key_result.private_key_uuid.value, str)
+
+        self._check_result_status(pub_key_result, ResultStatus, ResultStatus.SUCCESS)
+        self._check_object_type(pub_key_result.object_type.enum, ObjectType,
+                                ObjectType.PUBLIC_KEY)
+        self._check_uuid(pub_key_result.public_key_uuid.value, str)
+
+        # Check the secret type
+        priv_secret = priv_key_result.secret
+        pub_secret = pub_key_result.secret
+
+        priv_expected = PrivateKey
+        pub_expected = PublicKey
+
+        # TODO: Remove trace
+        pytest.set_trace()
+
+
+        message = utils.build_er_error(result.__class__, 'type', expected,
+                                       secret, 'secret')
+        self.assertIsInstance(secret, expected, message)
+
+        self.logger.info('Destroying key: ' + key_name + '\nWith UUID: ' +
+                         result.uuid.value)
+        self.client.destroy(result.uuid.value)
 
     # def test_private_key_register(self):
     #     pass
