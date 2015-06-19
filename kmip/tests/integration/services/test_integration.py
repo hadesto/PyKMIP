@@ -590,6 +590,10 @@ class TestIntegration(TestCase):
                                   ResultStatus.SUCCESS)
         self._check_object_type(priv_key_result.object_type.enum, ObjectType,
                                 ObjectType.PRIVATE_KEY)
+
+        # TODO: Remove trace
+        pytest.set_trace()
+
         self._check_uuid(priv_key_result.private_key_uuid.value, str)
 
         self._check_result_status(pub_key_result, ResultStatus, ResultStatus.SUCCESS)
