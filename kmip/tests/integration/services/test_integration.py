@@ -560,6 +560,10 @@ class TestIntegration(TestCase):
         self.logger.info('Destroying key: ' + key_name + ' Private'
                          + '\n With UUID: ' + result.private_key_uuid.value)
         result = self.client.destroy(result.private_key_uuid.value)
+
+        # TODO: Remove trace
+        pytest.set_trace()
+
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
         self.logger.info('Destroying key: ' + key_name + ' Public'
