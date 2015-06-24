@@ -22,7 +22,6 @@ from kmip.core.attributes import Name
 
 
 from kmip.core.enums import AttributeType
-from kmip.core.enums import CredentialType
 from kmip.core.enums import CryptographicAlgorithm as CryptoAlgorithmEnum
 from kmip.core.enums import CryptographicUsageMask
 from kmip.core.enums import KeyFormatType as KeyFormatTypeEnum
@@ -47,9 +46,6 @@ from kmip.core.objects import TemplateAttribute
 from kmip.core.misc import QueryFunction
 
 from kmip.core.secrets import SymmetricKey
-
-import kmip.core.utils as utils
-
 
 
 import pytest
@@ -180,9 +176,6 @@ class TestIntegration(TestCase):
 
         attributes = template_attribute.attributes
 
-        expected = num_attributes
-        observed = len(attributes)
-
         for i in range(num_attributes):
             features = attribute_features[i]
             self._check_attribute(attributes[i], features[0], features[1],
@@ -305,9 +298,8 @@ class TestIntegration(TestCase):
         expected = SymmetricKey
         self.assertIsInstance(secret, expected)
 
-
         self.logger.debug('Destroying key: ' + key_name + '\n With UUID: ' +
-                         result.uuid.value)
+                          result.uuid.value)
 
         result = self.client.destroy(result.uuid.value)
         self._check_result_status(result, ResultStatus,
@@ -329,7 +321,6 @@ class TestIntegration(TestCase):
         observed = result.result_reason.enum
 
         self.assertEqual(expected, observed)
-
 
     def test_symmetric_key_register_get_destroy(self):
         """
@@ -405,8 +396,8 @@ class TestIntegration(TestCase):
 
         self.assertEqual(expected, observed)
 
-        self.logger.debug('Destroying key: ' + key_name + '\nWith UUID: ' +
-                         result.uuid.value)
+        self.logger.debug('Destroying key: ' + key_name + '\nWith UUID: ' + 
+                          result.uuid.value)
 
         result = self.client.destroy(result.uuid.value)
         self._check_result_status(result, ResultStatus,
