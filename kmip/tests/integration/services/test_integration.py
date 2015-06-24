@@ -396,7 +396,7 @@ class TestIntegration(TestCase):
 
         self.assertEqual(expected, observed)
 
-        self.logger.debug('Destroying key: ' + key_name + '\nWith UUID: ' + 
+        self.logger.debug('Destroying key: ' + key_name + '\nWith UUID: ' +
                           result.uuid.value)
 
         result = self.client.destroy(result.uuid.value)
