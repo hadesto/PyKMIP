@@ -515,12 +515,13 @@ class TestIntegration(TestCase):
         # TODO: Remove trace
         pytest.set_trace()
 
-        self._check_uuid(priv_key_result.private_key_uuid.value, str)
-
+        self._check_uuid(priv_key_result.uuid.value, str)
         self._check_result_status(pub_key_result, ResultStatus, ResultStatus.SUCCESS)
         self._check_object_type(pub_key_result.object_type.enum, ObjectType,
                                 ObjectType.PUBLIC_KEY)
-        self._check_uuid(pub_key_result.public_key_uuid.value, str)
+
+
+        self._check_uuid(pub_key_result.uuid.value, str)
 
         # Check the secret type
         priv_secret = priv_key_result.secret
