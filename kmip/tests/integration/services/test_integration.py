@@ -156,7 +156,7 @@ class TestIntegration(TestCase):
         return self.client.create_key_pair(common_template_attribute=common,
                                            private_key_template_attribute=
                                            priv_template_attributes,
-                                           public_key_template_attribute=
+                                           public_key_template_attribute= 
                                            pub_template_attributes)
 
     def _check_result_status(self, result, result_status_type,
