@@ -485,7 +485,6 @@ class TestIntegration(TestCase):
     def test_key_pair_create_get_destroy(self):
         """
         Test that key pairs are properly created
-        :return:
         """
         key_name = 'Integration Test - Create-Get-Destroy Key Pair -'
         result = self._create_key_pair(key_name=key_name)
@@ -579,3 +578,171 @@ class TestIntegration(TestCase):
 
         self.assertEqual(expected, observed_priv)
         self.assertEqual(expected, observed_pub)
+
+    def test_key_pair_register_get_destroy(self):
+        """
+        Tests that symmetric keys are properly registered
+        """
+        priv_key_object_type = ObjectType.PRIVATE_KEY
+        pub_key_object_type = ObjectType.PUBLIC_KEY
+
+        attribute_type = AttributeType.CRYPTOGRAPHIC_ALGORITHM
+        cryptographic_algorithm = self.attr_factory.create_attribute(
+            attribute_type, CryptoAlgorithmEnum.RSA)
+
+        mask_flags = [CryptographicUsageMask.ENCRYPT,
+                      CryptographicUsageMask.DECRYPT]
+        attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
+        usage_mask = self.attr_factory.create_attribute(attribute_type,
+                                                        mask_flags)
+
+        name = Attribute.AttributeName('Name')
+        key_name = 'Integration Test - Register-Get-Destroy Key -'
+
+        priv_name_value = Name.NameValue(key_name + " Private")
+        pub_name_value = Name.NameValue(key_name + " Public")
+
+        name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
+        priv_value = Name(name_value=priv_name_value, name_type=name_type)
+        pub_value = Name(name_value=pub_name_value, name_type=name_type)
+
+        priv_name = Attribute(attribute_name=name, attribute_value=priv_value)
+        pub_name = Attribute(attribute_name=name, attribute_value=pub_value)
+
+        priv_key_attributes = [usage_mask, priv_name]
+        pub_key_attributes = [usage_mask, pub_name]
+
+        private_template_attribute = PrivateKeyTemplateAttribute(
+            attributes=priv_key_attributes)
+
+        public_template_attribute = PublicKeyTemplateAttribute(
+            attributes=pub_key_attributes)
+
+        key_format_type = KeyFormatType(KeyFormatTypeEnum.RAW)
+
+        key_data = (
+            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00')
+
+        key_material = KeyMaterial(key_data)
+        key_value = KeyValue(key_material)
+
+        key_block = KeyBlock(
+            key_format_type=key_format_type,
+            key_compression_type=None,
+            key_value=key_value,
+            cryptographic_algorithm=cryptographic_algorithm,
+            cryptographic_length=cryptographic_length,
+            key_wrapping_data=None)
+
+        priv_secret = PrivateKey(key_block)
+        pub_secret = PublicKey(key_block)
+
+        priv_key_result = self.client.register(priv_key_object_type,
+                                               private_template_attribute,
+                                               priv_secret, credential=None)
+
+        pub_key_result = self.client.register(ppub_key_object_type,
+                                               public_template_attribute,
+                                               pub_secret, credential=None)
+
+
+
+        self._check_result_status(priv_key_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+        self._check_result_status(pub_key_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+
+        self._check_uuid(priv_key_result.uuid.value, str)
+        self._check_uuid(pub_key_result.uuid.value, str)
+
+        # Check that the returned key bytes match what was provided
+        priv_uuid = priv_key_result.uuid.value
+        pub_uuid = pub_key_result.uuid.value
+
+        priv_key_result = self.client.get(uuid=priv_uuid, credential=None)
+        pub_key_result = self.client.get(uuid=pub_uuid, credential=None)
+
+        self._check_result_status(priv_key_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+        self._check_result_status(pub_key_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+
+
+        self._check_object_type(priv_key_result.object_type.enum, ObjectType,
+                                ObjectType.PRIVATE_KEY)
+        self._check_object_type(pub_key_result.object_type.enum, ObjectType,
+                                ObjectType.PUBLIC_KEY)
+
+        self._check_uuid(priv_key_result.uuid.value, str)
+        self._check_uuid(pub_key_result.uuid.value, str)
+
+
+        # Check the secret type
+        priv_secret = priv_key_result.secret
+        pub_secret = pub_key_result.secret
+
+        priv_expected = PrivateKey
+        pub_expected = PublicKey
+
+        self.assertIsInstance(priv_secret, priv_expected)
+        self.assertIsInstance(pub_secret, pub_expected)
+
+        priv_key_block = priv_key_result.secret.key_block
+        priv_key_value = priv_key_block.key_value
+        priv_key_material = priv_key_value.key_material
+
+        pub_key_block = pub_key_result.secret.key_block
+        pub_key_value = pub_key_block.key_value
+        pub_key_material = pub_key_value.key_material
+
+        expected = key_data
+
+        priv_observed = priv_key_material.value
+        pub_observed = pub_key_material.value
+
+        self.assertEqual(expected, priv_observed)
+        self.assertEqual(expected, pub_observed)
+
+        self.logger.debug('Destroying key: ' + key_name + " Private" +
+                          '\nWith " "UUID: ' + priv_key_result.uuid.value)
+
+        priv_result = self.client.destroy(priv_key_result.uuid.value)
+
+        self.logger.debug('Destroying key: ' + key_name + " Private" +
+                          '\nWith " "UUID: ' + pub_key_result.uuid.value)
+        pub_result = self.client.destroy(pub_key_result.uuid.value)
+
+
+        self._check_result_status(priv_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+        self._check_result_status(pub_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+
+        self._check_uuid(priv_result.uuid.value, str)
+        self._check_uuid(pub_result.uuid.value, str)
+
+        # Verify the secret was destroyed
+        priv_key_destroyed_result = self.client.get(uuid=priv_uuid,
+                                                    credential=None)
+        pub_key_destroyed_result = self.client.get(uuid=pub_uuid,
+                                                   credential=None)
+
+        self._check_result_status(priv_key_destroyed_result, ResultStatus,
+                                  ResultStatus.OPERATION_FAILED)
+        self._check_result_status(pub_key_destroyed_result, ResultStatus,
+                                  ResultStatus.OPERATION_FAILED)
+
+        expected = ResultReason
+        priv_observed = type(priv_key_destroyed_result.result_reason.enum)
+        pub_observed = type(pub_key_destroyed_result.result_reason.enum)
+
+        self.assertEqual(expected, priv_observed)
+        self.assertEqual(expected, pub_observed)
+
+        expected = ResultReason.ITEM_NOT_FOUND
+        priv_observed = priv_key_destroyed_result.result_reason.enum
+        pub_observed = pub_key_destroyed_result.result_reason.enum
+
+        self.assertEqual(expected, priv_observed)
+        self.assertEqual(expected, pub_observed)
