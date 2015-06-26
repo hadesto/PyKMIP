@@ -153,8 +153,7 @@ class TestIntegration(TestCase):
         # TODO: Remove trace
         # pytest.set_trace()
 
-        return self.client.create_key_pair(common_template_attribute=
-                                           common,
+        return self.client.create_key_pair(common_template_attribute=common,
                                            private_key_template_attribute=
                                            priv_template_attributes,
                                            public_key_template_attribute=
@@ -494,7 +493,6 @@ class TestIntegration(TestCase):
         # Check UUID value for Public key
         self._check_uuid(result.public_key_uuid.value, str)
 
-
         priv_key_uuid = result.private_key_uuid.value
         pub_key_uuid = result.public_key_uuid.value
 
@@ -514,7 +512,6 @@ class TestIntegration(TestCase):
                                   ResultStatus.SUCCESS)
         self._check_object_type(pub_key_result.object_type.enum, ObjectType,
                                 ObjectType.PUBLIC_KEY)
-
 
         self._check_uuid(pub_key_result.uuid.value, str)
 
@@ -665,7 +662,6 @@ class TestIntegration(TestCase):
         self._check_result_status(pub_key_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
-
         self._check_object_type(priv_key_result.object_type.enum, ObjectType,
                                 ObjectType.PRIVATE_KEY)
         self._check_object_type(pub_key_result.object_type.enum, ObjectType,
@@ -708,7 +704,6 @@ class TestIntegration(TestCase):
         self.logger.debug('Destroying key: ' + key_name + " Private" +
                           '\nWith " "UUID: ' + pub_key_result.uuid.value)
         pub_result = self.client.destroy(pub_key_result.uuid.value)
-
 
         self._check_result_status(priv_result, ResultStatus,
                                   ResultStatus.SUCCESS)
