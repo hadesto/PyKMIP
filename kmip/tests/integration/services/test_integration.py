@@ -113,7 +113,7 @@ class TestIntegration(TestCase):
         return self.client.create(object_type, template_attribute,
                                   credential=None)
 
-   def _create_key_pair(self, key_name=None):
+    def _create_key_pair(self, key_name=None):
         """
         Helper function for creating private and public keys. Used any time
         a key pair needs to be created.
