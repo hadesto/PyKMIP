@@ -538,19 +538,21 @@ class TestIntegration(TestCase):
 
         self.logger.info('Destroying key: ' + key_name + ' Private'
                          + '\n With UUID: ' + result.private_key_uuid.value)
-        destroy_result = self.client.destroy(result.private_key_uuid.value)
+        destroy_prif_key result = self.client.destroy(
+            result.private_key_uuid.value)
 
         self._check_result_status(destroy_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
         self.logger.info('Destroying key: ' + key_name + ' Public'
                          + '\n With UUID: ' + result.public_key_uuid.value)
-        destroy_result = self.client.destroy(result.public_key_uuid.value)
+        destroy_pub_key_result = self.client.destroy(
+            result.public_key_uuid.value)
         self._check_result_status(destroy_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
-        priv_key_uuid = destroy_result.private_key_uuid.value
-        pub_key_uuid = destroy_result.public_key_uuid.value
+        priv_key_uuid = destroy_priv_key_result.uuid.value
+        pub_key_uuid = destroy_pub_key_result.uuid.value
 
         self._check_uuid(priv_key_uuid, str)
         self._check_uuid(pub_key_uuid, str)
