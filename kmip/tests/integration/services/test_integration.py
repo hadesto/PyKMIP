@@ -541,12 +541,12 @@ class TestIntegration(TestCase):
         self.assertEqual(expected, observed, message)
 
 
-    def test_key_pair_create(self):
+    def test_key_pair_create_get_destroy(self):
         """
-        Test that private asymmetric keys are properly created
+        Test that key pairs are properly created
         :return:
         """
-        key_name = 'Integration Test - Create Key Pair -'
+        key_name = 'Integration Test - Create-Get-Destroy Key Pair -'
         result = self._create_key_pair(key_name=key_name)
 
         # TODO: Remove trace
@@ -559,26 +559,6 @@ class TestIntegration(TestCase):
         # Check UUID value for Public key
         self._check_uuid(result.public_key_uuid.value, str)
 
-        self.logger.info('Destroying key: ' + key_name + ' Private'
-                         + '\n With UUID: ' + result.private_key_uuid.value)
-        destroy_result = self.client.destroy(result.private_key_uuid.value)
-
-        self._check_result_status(destroy_result, ResultStatus,
-                                  ResultStatus.SUCCESS)
-
-        self.logger.info('Destroying key: ' + key_name + ' Public'
-                         + '\n With UUID: ' + result.public_key_uuid.value)
-        destroy_result = self.client.destroy(result.public_key_uuid.value)
-        self._check_result_status(destroy_result, ResultStatus,
-                                  ResultStatus.SUCCESS)
-
-    def test_key_pair_get(self):
-        """
-        Tests that key pair data can be retrieved from the appliance
-        :return:
-        """
-        key_name = 'Integration Test - Get Key Pair -'
-        result = self._create_key_pair(key_name=key_name)
 
         priv_key_uuid = result.private_key_uuid.value
         pub_key_uuid = result.public_key_uuid.value
@@ -611,14 +591,22 @@ class TestIntegration(TestCase):
         # TODO: Remove trace
         pytest.set_trace()
 
+        self.assertIsInstance(priv_secret, priv_expected)
+        self.assertIsInstance(pub_secret, pub_expected)
 
-        message = utils.build_er_error(result.__class__, 'type', expected,
-                                       secret, 'secret')
-        self.assertIsInstance(secret, expected, message)
+        self.logger.info('Destroying key: ' + key_name + ' Private'
+                         + '\n With UUID: ' + result.private_key_uuid.value)
+        destroy_result = self.client.destroy(result.private_key_uuid.value)
 
-        self.logger.info('Destroying key: ' + key_name + '\nWith UUID: ' +
-                         result.uuid.value)
-        self.client.destroy(result.uuid.value)
+        self._check_result_status(destroy_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+
+        self.logger.info('Destroying key: ' + key_name + ' Public'
+                         + '\n With UUID: ' + result.public_key_uuid.value)
+        destroy_result = self.client.destroy(result.public_key_uuid.value)
+        self._check_result_status(destroy_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
+
 
     # def test_private_key_register(self):
     #     pass
