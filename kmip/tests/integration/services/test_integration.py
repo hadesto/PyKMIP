@@ -13,7 +13,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import pytest
 import logging
 from testtools import TestCase
 
@@ -23,7 +22,6 @@ from kmip.core.attributes import Name
 
 
 from kmip.core.enums import AttributeType
-from kmip.core.enums import CredentialType
 from kmip.core.enums import CryptographicAlgorithm as CryptoAlgorithmEnum
 from kmip.core.enums import CryptographicUsageMask
 from kmip.core.enums import KeyFormatType as KeyFormatTypeEnum
@@ -53,10 +51,6 @@ from kmip.core.misc import QueryFunction
 from kmip.core.secrets import SymmetricKey
 from kmip.core.secrets import PrivateKey
 from kmip.core.secrets import PublicKey
-
-import kmip.core.utils as utils
-
-
 
 import pytest
 
@@ -165,6 +159,7 @@ class TestIntegration(TestCase):
                                            priv_template_attributes,
                                            public_key_template_attribute=
                                            pub_template_attributes)
+
     def _check_result_status(self, result, result_status_type,
                              result_status_value):
         """
@@ -515,7 +510,8 @@ class TestIntegration(TestCase):
         # pytest.set_trace()
 
         self._check_uuid(priv_key_result.uuid.value, str)
-        self._check_result_status(pub_key_result, ResultStatus, ResultStatus.SUCCESS)
+        self._check_result_status(pub_key_result, ResultStatus,
+                                  ResultStatus.SUCCESS)
         self._check_object_type(pub_key_result.object_type.enum, ObjectType,
                                 ObjectType.PUBLIC_KEY)
 
@@ -535,16 +531,16 @@ class TestIntegration(TestCase):
         self.assertIsInstance(priv_secret, priv_expected)
         self.assertIsInstance(pub_secret, pub_expected)
 
-        self.logger.debug('Destroying key: ' + key_name + ' Private'
-                         + '\n With UUID: ' + result.private_key_uuid.value)
+        self.logger.debug('Destroying key: ' + key_name + ' Private' +
+                          '\n With UUID: ' + result.private_key_uuid.value)
         destroy_priv_key_result = self.client.destroy(
             result.private_key_uuid.value)
 
         self._check_result_status(destroy_priv_key_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
-        self.logger.debug('Destroying key: ' + key_name + ' Public'
-                         + '\n With UUID: ' + result.public_key_uuid.value)
+        self.logger.debug('Destroying key: ' + key_name + ' Public' +
+                          '\n With UUID: ' + result.public_key_uuid.value)
         destroy_pub_key_result = self.client.destroy(
             result.public_key_uuid.value)
         self._check_result_status(destroy_pub_key_result, ResultStatus,
@@ -643,9 +639,8 @@ class TestIntegration(TestCase):
                                                priv_secret, credential=None)
 
         pub_key_result = self.client.register(pub_key_object_type,
-                                               public_template_attribute,
-                                               pub_secret, credential=None)
-
+                                              public_template_attribute,
+                                              pub_secret, credential=None)
 
         # TODO: Remove trace
         pytest.set_trace()
@@ -678,7 +673,6 @@ class TestIntegration(TestCase):
 
         self._check_uuid(priv_key_result.uuid.value, str)
         self._check_uuid(pub_key_result.uuid.value, str)
-
 
         # Check the secret type
         priv_secret = priv_key_result.secret
