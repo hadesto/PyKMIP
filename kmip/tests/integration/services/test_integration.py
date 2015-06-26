@@ -496,3 +496,31 @@ class TestIntegration(TestCase):
         self._check_result_status(destroy_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
+        priv_key_uuid = destroy_result.private_key_uuid.value
+        pub_key_uuid = destroy_result.public_key_uuid.value
+
+        self._check_uuid(priv_key_uuid, str)
+        self._check_uuid(pub_key_uuid, str)
+
+        # Verify the secret was destroyed
+        priv_key_destroyed_result = self.client.get(uuid=priv_key_uuid)
+        pub_key_destroyed_result = self.client.get(uuid=pub_key_uuid)
+
+        self._check_result_status(priv_key_destroyed_result, ResultStatus,
+                                  ResultStatus.OPERATION_FAILED)
+        self._check_result_status(pub_key_destroyed_result, ResultStatus,
+                                  ResultStatus.OPERATION_FAILED)
+
+        expected = ResultReason
+        observed_priv = type(priv_key_destroyed_result.result_reason.enum)
+        observed_pub = type(pub_key_destroyed_result.result_reason.enum)
+
+        self.assertEqual(expected, observed_priv)
+        self.assertEqual(expected, observed_pub)
+
+        expected = ResultReason.ITEM_NOT_FOUND
+        observed_priv = priv_key_destroyed_result.result_reason.enum
+        observed_pub = pub_key_destroyed_result.result_reason.enum
+
+        self.assertEqual(expected, observed_priv)
+        self.assertEqual(expected, observed_pub)
