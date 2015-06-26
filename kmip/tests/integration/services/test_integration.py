@@ -153,11 +153,12 @@ class TestIntegration(TestCase):
         # TODO: Remove trace
         # pytest.set_trace()
 
-        return self.client.create_key_pair(common_template_attribute=common,
-                                           private_key_template_attribute=
-                                           priv_template_attributes,
-                                           public_key_template_attribute= 
-                                           pub_template_attributes)
+        return self.client.\
+            create_key_pair(common_template_attribute=common,
+                            private_key_template_attribute=
+                            priv_template_attributes,
+                            public_key_template_attribute=
+                            pub_template_attributes)
 
     def _check_result_status(self, result, result_status_type,
                              result_status_value):
