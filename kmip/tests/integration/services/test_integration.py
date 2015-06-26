@@ -157,7 +157,7 @@ class TestIntegration(TestCase):
             attributes=public_key_attributes)
 
         # TODO: Remove trace
-        pytest.set_trace()
+        # pytest.set_trace()
 
         return self.client.create_key_pair(common_template_attribute=
                                            common,
@@ -647,6 +647,8 @@ class TestIntegration(TestCase):
                                                pub_secret, credential=None)
 
 
+        # TODO: Remove trace
+        pytest.set_trace()
 
         self._check_result_status(priv_key_result, ResultStatus,
                                   ResultStatus.SUCCESS)
