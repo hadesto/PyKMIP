@@ -113,6 +113,58 @@ class TestIntegration(TestCase):
         return self.client.create(object_type, template_attribute,
                                   credential=None)
 
+   def _create_key_pair(self, key_name=None):
+        """
+        Helper function for creating private and public keys. Used any time
+        a key pair needs to be created.
+        :param key_name: name of the key to be created
+        :return: returns the result of the "create key" operation as
+        provided by the KMIP appliance
+        """
+        attribute_type = AttributeType.CRYPTOGRAPHIC_ALGORITHM
+        algorithm = self.attr_factory.create_attribute(attribute_type,
+                                                       CryptoAlgorithmEnum.RSA)
+        mask_flags = [CryptographicUsageMask.ENCRYPT,
+                      CryptographicUsageMask.DECRYPT]
+        attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
+        usage_mask = self.attr_factory.create_attribute(attribute_type,
+                                                        mask_flags)
+        key_length = 2048
+        attribute_type = AttributeType.CRYPTOGRAPHIC_LENGTH
+        key_length_obj = self.attr_factory.create_attribute(attribute_type,
+                                                            key_length)
+        name = Attribute.AttributeName('Name')
+
+        if key_name is None:
+            key_name = 'Integration Test - Key'
+
+        priv_name_value = Name.NameValue(key_name + " Private")
+        pub_name_value = Name.NameValue(key_name + " Public")
+        name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
+        priv_value = Name(name_value=priv_name_value, name_type=name_type)
+        pub_value = Name(name_value=pub_name_value, name_type=name_type)
+        priv_name = Attribute(attribute_name=name, attribute_value=priv_value)
+        pub_name = Attribute(attribute_name=name, attribute_value=pub_value)
+
+        common_attributes = [algorithm, usage_mask, key_length_obj]
+        private_key_attributes = [priv_name]
+        public_key_attributes = [pub_name]
+
+        common = CommonTemplateAttribute(attributes=common_attributes)
+        priv_template_attributes = PrivateKeyTemplateAttribute(
+            attributes=private_key_attributes)
+        pub_template_attributes = PublicKeyTemplateAttribute(
+            attributes=public_key_attributes)
+
+        # TODO: Remove trace
+        pytest.set_trace()
+
+        return self.client.create_key_pair(common_template_attribute=
+                                           common,
+                                           private_key_template_attribute=
+                                           priv_template_attributes,
+                                           public_key_template_attribute=
+                                           pub_template_attributes)
     def _check_result_status(self, result, result_status_type,
                              result_status_value):
         """
