@@ -145,9 +145,9 @@ class TestIntegration(TestCase):
         public_key_attributes = [pub_name]
 
         common = CommonTemplateAttribute(attributes=common_attributes)
-        priv_template_attributes = PrivateKeyTemplateAttribute(
+        priv_templ_attr = PrivateKeyTemplateAttribute(
             attributes=private_key_attributes)
-        pub_template_attributes = PublicKeyTemplateAttribute(
+        pub_templ_attr = PublicKeyTemplateAttribute(
             attributes=public_key_attributes)
 
         # TODO: Remove trace
@@ -155,10 +155,8 @@ class TestIntegration(TestCase):
 
         return self.client.\
             create_key_pair(common_template_attribute=common,
-                            private_key_template_attribute=
-                            priv_template_attributes,
-                            public_key_template_attribute=
-                            pub_template_attributes)
+                            private_key_template_attribute=priv_templ_attr,
+                            public_key_template_attribute=pub_templ_attr)
 
     def _check_result_status(self, result, result_status_type,
                              result_status_value):
