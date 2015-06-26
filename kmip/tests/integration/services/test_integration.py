@@ -536,7 +536,7 @@ class TestIntegration(TestCase):
         self.assertIsInstance(priv_secret, priv_expected)
         self.assertIsInstance(pub_secret, pub_expected)
 
-        self.logger.info('Destroying key: ' + key_name + ' Private'
+        self.logger.debug('Destroying key: ' + key_name + ' Private'
                          + '\n With UUID: ' + result.private_key_uuid.value)
         destroy_priv_key_result = self.client.destroy(
             result.private_key_uuid.value)
@@ -544,7 +544,7 @@ class TestIntegration(TestCase):
         self._check_result_status(destroy_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
-        self.logger.info('Destroying key: ' + key_name + ' Public'
+        self.logger.debug('Destroying key: ' + key_name + ' Public'
                          + '\n With UUID: ' + result.public_key_uuid.value)
         destroy_pub_key_result = self.client.destroy(
             result.public_key_uuid.value)
