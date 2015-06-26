@@ -490,7 +490,7 @@ class TestIntegration(TestCase):
         result = self._create_key_pair(key_name=key_name)
 
         # TODO: Remove trace
-        pytest.set_trace()
+        # pytest.set_trace()
 
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
@@ -512,7 +512,7 @@ class TestIntegration(TestCase):
                                 ObjectType.PRIVATE_KEY)
 
         # TODO: Remove trace
-        pytest.set_trace()
+        # pytest.set_trace()
 
         self._check_uuid(priv_key_result.uuid.value, str)
         self._check_result_status(pub_key_result, ResultStatus, ResultStatus.SUCCESS)
@@ -530,7 +530,7 @@ class TestIntegration(TestCase):
         pub_expected = PublicKey
 
         # TODO: Remove trace
-        pytest.set_trace()
+        # pytest.set_trace()
 
         self.assertIsInstance(priv_secret, priv_expected)
         self.assertIsInstance(pub_secret, pub_expected)
@@ -586,10 +586,6 @@ class TestIntegration(TestCase):
         priv_key_object_type = ObjectType.PRIVATE_KEY
         pub_key_object_type = ObjectType.PUBLIC_KEY
 
-        attribute_type = AttributeType.CRYPTOGRAPHIC_ALGORITHM
-        cryptographic_algorithm = self.attr_factory.create_attribute(
-            attribute_type, CryptoAlgorithmEnum.RSA)
-
         mask_flags = [CryptographicUsageMask.ENCRYPT,
                       CryptographicUsageMask.DECRYPT]
         attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
@@ -627,6 +623,10 @@ class TestIntegration(TestCase):
         key_material = KeyMaterial(key_data)
         key_value = KeyValue(key_material)
 
+        algorithm_value = CryptoAlgorithmEnum.RSA
+        cryptographic_algorithm = CryptographicAlgorithm(algorithm_value)
+        cryptographic_length = CryptographicLength(2048)
+
         key_block = KeyBlock(
             key_format_type=key_format_type,
             key_compression_type=None,
@@ -642,7 +642,7 @@ class TestIntegration(TestCase):
                                                private_template_attribute,
                                                priv_secret, credential=None)
 
-        pub_key_result = self.client.register(ppub_key_object_type,
+        pub_key_result = self.client.register(pub_key_object_type,
                                                public_template_attribute,
                                                pub_secret, credential=None)
 
