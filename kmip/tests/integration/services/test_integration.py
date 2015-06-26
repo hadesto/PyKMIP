@@ -608,10 +608,10 @@ class TestIntegration(TestCase):
         priv_key_attributes = [usage_mask, priv_name]
         pub_key_attributes = [usage_mask, pub_name]
 
-        private_template_attribute = PrivateKeyTemplateAttribute(
+        private_template_attribute = TemplateAttribute(
             attributes=priv_key_attributes)
 
-        public_template_attribute = PublicKeyTemplateAttribute(
+        public_template_attribute = TemplateAttribute(
             attributes=pub_key_attributes)
 
         key_format_type = KeyFormatType(KeyFormatTypeEnum.RAW)
