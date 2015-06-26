@@ -216,7 +216,7 @@ class Credential(Struct):
         class NetworkIdentifier(TextString):
 
             def __init__(self, value=None):
-                super(Credential.DeviceCredential.NetworkIdetifier, self).\
+                super(Credential.DeviceCredential.NetworkIdentifier, self).\
                     __init__(value, Tags.NETWORK_IDENTIFIER)
 
         class MachineIdentifier(TextString):
@@ -240,12 +240,12 @@ class Credential(Struct):
                      media_identifier=None):
             super(Credential.DeviceCredential, self).__init__(
                 tag=Tags.CREDENTIAL_VALUE)
-            super.device_serial_number = device_serial_number
-            super.password = password
-            super.device_identifier = device_identifier
-            super.network_identifier = network_identifier
-            super.machine_identifier = machine_identifier
-            super.media_identifier = media_identifier
+            self.device_serial_number = device_serial_number
+            self.password = password
+            self.device_identifier = device_identifier
+            self.network_identifier = network_identifier
+            self.machine_identifier = machine_identifier
+            self.media_identifier = media_identifier
 
         def read(self, istream):
             super(Credential.DeviceCredential, self).read(istream)
@@ -571,7 +571,7 @@ class EncodingOption(Enumeration):
     ENUM_TYPE = enums.EncodingOption
 
     def __init__(self, value=None):
-        super(WrappingMethod, self).__init__(value, Tags.ENCODING_OPTION)
+        super(EncodingOption, self).__init__(value, Tags.ENCODING_OPTION)
 
 
 class KeyInformation(Struct):
@@ -580,8 +580,7 @@ class KeyInformation(Struct):
                  unique_identifier=None,
                  cryptographic_parameters=None,
                  tag=Tags.ENCRYPTION_KEY_INFORMATION):
-        super(KeyInformation, self).__init__(
-            tag=Tags.ENCRYPTION_KEY_INFORMATION)
+        super(KeyInformation, self).__init__(tag=tag)
         self.unique_identifier = unique_identifier
         self.cryptographic_parameters = cryptographic_parameters
         self.validate()
