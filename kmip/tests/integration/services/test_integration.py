@@ -538,7 +538,7 @@ class TestIntegration(TestCase):
 
         self.logger.info('Destroying key: ' + key_name + ' Private'
                          + '\n With UUID: ' + result.private_key_uuid.value)
-        destroy_prif_key result = self.client.destroy(
+        destroy_priv_key_result = self.client.destroy(
             result.private_key_uuid.value)
 
         self._check_result_status(destroy_result, ResultStatus,
