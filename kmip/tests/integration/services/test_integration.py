@@ -150,9 +150,6 @@ class TestIntegration(TestCase):
         pub_templ_attr = PublicKeyTemplateAttribute(
             attributes=public_key_attributes)
 
-        # TODO: Remove trace
-        # pytest.set_trace()
-
         return self.client.\
             create_key_pair(common_template_attribute=common,
                             private_key_template_attribute=priv_templ_attr,
@@ -482,9 +479,6 @@ class TestIntegration(TestCase):
         key_name = 'Integration Test - Create-Get-Destroy Key Pair -'
         result = self._create_key_pair(key_name=key_name)
 
-        # TODO: Remove trace
-        # pytest.set_trace()
-
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
         # Check UUID value for Private key
@@ -503,9 +497,6 @@ class TestIntegration(TestCase):
         self._check_object_type(priv_key_result.object_type.enum, ObjectType,
                                 ObjectType.PRIVATE_KEY)
 
-        # TODO: Remove trace
-        # pytest.set_trace()
-
         self._check_uuid(priv_key_result.uuid.value, str)
         self._check_result_status(pub_key_result, ResultStatus,
                                   ResultStatus.SUCCESS)
@@ -520,9 +511,6 @@ class TestIntegration(TestCase):
 
         priv_expected = PrivateKey
         pub_expected = PublicKey
-
-        # TODO: Remove trace
-        # pytest.set_trace()
 
         self.assertIsInstance(priv_secret, priv_expected)
         self.assertIsInstance(pub_secret, pub_expected)
@@ -637,9 +625,6 @@ class TestIntegration(TestCase):
         pub_key_result = self.client.register(pub_key_object_type,
                                               public_template_attribute,
                                               pub_secret, credential=None)
-
-        # TODO: Remove trace
-        pytest.set_trace()
 
         self._check_result_status(priv_key_result, ResultStatus,
                                   ResultStatus.SUCCESS)
