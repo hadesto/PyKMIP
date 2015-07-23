@@ -851,9 +851,10 @@ class TestIntegration(TestCase):
         name_type = Name.NameType(NameType.UNINTERPRETED_TEXT_STRING)
         cert_value = Name(name_value=cert_name_value, name_type=name_type)
 
-        cert_name = Attribute(attribute_name=name, attribute_value=cert_value)
+        cert_name_attr = Attribute(attribute_name=name,
+                                attribute_value=cert_value)
 
-        cert_attributes = [usage_mask, cert_name]
+        cert_attributes = [usage_mask, cert_name_attr]
 
         cert_template_attribute = TemplateAttribute(
             attributes=cert_attributes)
