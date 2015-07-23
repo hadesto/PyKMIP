@@ -123,7 +123,7 @@ class TestIntegration(TestCase):
         attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
         usage_mask = self.attr_factory.create_attribute(attribute_type,
                                                         mask_flags)
-        key_length = 1024
+        key_length = 2048
         attribute_type = AttributeType.CRYPTOGRAPHIC_LENGTH
         key_length_obj = self.attr_factory.create_attribute(attribute_type,
                                                             key_length)
@@ -637,7 +637,7 @@ class TestIntegration(TestCase):
 
         algorithm_value = CryptoAlgorithmEnum.RSA
         cryptographic_algorithm = CryptographicAlgorithm(algorithm_value)
-        cryptographic_length = CryptographicLength(1024)
+        cryptographic_length = CryptographicLength(2048)
 
         key_block = KeyBlock(
             key_format_type=key_format_type,
@@ -764,7 +764,7 @@ class TestIntegration(TestCase):
 
         algorithm_value = CryptoAlgorithmEnum.RSA
         cryptographic_algorithm = CryptographicAlgorithm(algorithm_value)
-        cryptographic_length = CryptographicLength(1024)
+        cryptographic_length = CryptographicLength(2048)
 
         key_block = KeyBlock(
             key_format_type=key_format_type,
