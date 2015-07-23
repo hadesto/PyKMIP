@@ -952,40 +952,40 @@ class TestIntegration(TestCase):
 
         self.assertIsInstance(cert_secret, cert_secret_expected)
 
-        cert_material = cert_result.secret.certificate_value
+        cert_material = cert_result.secret.certificate_value.value
 
         expected = cert_data
 
         self.assertEqual(expected, cert_material)
 
         self.logger.debug('Destroying cert: ' + cert_name +
-                          '\nWith " "UUID: ' + cert_value.uuid.value)
+                          '\nWith " "UUID: ' + cert_result.uuid.value)
 
-        cert_value = self.client.destroy(cert_value.uuid.value)
+        cert_result = self.client.destroy(cert_result.uuid.value)
 
 
-        self._check_result_status(cert_value, ResultStatus,
+        self._check_result_status(cert_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
 
-        self._check_uuid(cert_value.uuid.value, str)
+        self._check_uuid(cert_result.uuid.value, str)
 
         # Verify the secret was destroyed
-        cert_value_destroyed_result = self.client.get(uuid=cert_uuid,
+        cert_result_destroyed_result = self.client.get(uuid=cert_uuid,
                                                     credential=None)
 
 
-        self._check_result_status(cert_value_destroyed_result, ResultStatus,
+        self._check_result_status(cert_result_destroyed_result, ResultStatus,
                                   ResultStatus.OPERATION_FAILED)
 
 
         expected = ResultReason
-        cert_observed = type(cert_value_destroyed_result.result_reason.enum)
+        cert_observed = type(cert_result_destroyed_result.result_reason.enum)
 
         self.assertEqual(expected, cert_observed)
 
         expected = ResultReason.ITEM_NOT_FOUND
-        cert_observed = cert_value_destroyed_result.result_reason.enum
+        cert_observed = cert_result_destroyed_result.result_reason.enum
 
         self.assertEqual(expected, cert_observed)
 
