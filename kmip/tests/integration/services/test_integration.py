@@ -844,7 +844,7 @@ class TestIntegration(TestCase):
                                                         mask_flags)
 
         name = Attribute.AttributeName('Name')
-        cert_name = 'Integration Test - Register-Get-Destroy Cert -'
+        cert_name = 'Integration Test - Register-Get-Destroy Certificate'
 
         cert_name_value = Name.NameValue(cert_name)
 
@@ -925,71 +925,69 @@ class TestIntegration(TestCase):
         # TODO: Remove trace
         pytest.set_trace()
 
-        self._check_uuid(priv_key_result.uuid.value, str)
+        self._check_uuid(cert_result.uuid.value, str)
 
         # Check that the returned key bytes match what was provided
-        priv_uuid = priv_key_result.uuid.value
+        cert_uuid = cert_result.uuid.value
 
-        priv_key_result = self.client.get(uuid=priv_uuid, credential=None)
+        cert_result = self.client.get(uuid=cert_uuid, credential=None)
 
-        self._check_result_status(priv_key_result, ResultStatus,
+        self._check_result_status(cert_result, ResultStatus,
                                   ResultStatus.SUCCESS)
 
 
-        self._check_object_type(priv_key_result.object_type.enum, ObjectType,
-                                ObjectType.PRIVATE_KEY)
+        self._check_object_type(cert_result.object_type.enum, ObjectType,
+                                ObjectType.CERTIFICATE)
 
 
-        self._check_uuid(priv_key_result.uuid.value, str)
+        self._check_uuid(cert_result.uuid.value, str)
+
+        # TODO: Remove trace
+        pytest.set_trace()
 
         # Check the secret type
-        priv_secret = priv_key_result.secret
+        cert_secret = cert_result.secret
 
-        priv_expected = PrivateKey
+        cert_secret_expected = Certificate
 
-        self.assertIsInstance(priv_secret, priv_expected)
+        self.assertIsInstance(cert_secret, cert_secret_expected)
 
-        priv_key_block = priv_key_result.secret.key_block
-        priv_key_value = priv_key_block.key_value
-        priv_key_material = priv_key_value.key_material
+        cert_material = cert_result.secret.certificate_value
 
+        expected = cert_data
 
-        expected = key_data
+        self.assertEqual(expected, cert_material)
 
-        priv_observed = priv_key_material.value
+        self.logger.debug('Destroying cert: ' + cert_name +
+                          '\nWith " "UUID: ' + cert_value.uuid.value)
 
-        self.assertEqual(expected, priv_observed)
-
-        self.logger.debug('Destroying key: ' + key_name + " Private" +
-                          '\nWith " "UUID: ' + priv_key_result.uuid.value)
-
-        priv_result = self.client.destroy(priv_key_result.uuid.value)
+        cert_value = self.client.destroy(cert_value.uuid.value)
 
 
-        self._check_result_status(priv_result, ResultStatus,
+        self._check_result_status(cert_value, ResultStatus,
                                   ResultStatus.SUCCESS)
 
 
-        self._check_uuid(priv_result.uuid.value, str)
+        self._check_uuid(cert_value.uuid.value, str)
 
         # Verify the secret was destroyed
-        priv_key_destroyed_result = self.client.get(uuid=priv_uuid,
+        cert_value_destroyed_result = self.client.get(uuid=cert_uuid,
                                                     credential=None)
 
 
-        self._check_result_status(priv_key_destroyed_result, ResultStatus,
+        self._check_result_status(cert_value_destroyed_result, ResultStatus,
                                   ResultStatus.OPERATION_FAILED)
 
 
         expected = ResultReason
-        priv_observed = type(priv_key_destroyed_result.result_reason.enum)
+        cert_observed = type(cert_value_destroyed_result.result_reason.enum)
 
-        self.assertEqual(expected, priv_observed)
+        self.assertEqual(expected, cert_observed)
 
         expected = ResultReason.ITEM_NOT_FOUND
-        priv_observed = priv_key_destroyed_result.result_reason.enum
+        cert_observed = cert_value_destroyed_result.result_reason.enum
 
-        self.assertEqual(expected, priv_observed)
+        self.assertEqual(expected, cert_observed)
 
 
 
