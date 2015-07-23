@@ -479,6 +479,8 @@ class TestIntegration(TestCase):
         key_name = 'Integration Test - Create-Get-Destroy Key Pair -'
         result = self._create_key_pair(key_name=key_name)
 
+        # TODO: remove trace
+        pytest.set_trace();
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
         # Check UUID value for Private key
