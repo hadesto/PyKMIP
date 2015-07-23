@@ -482,7 +482,8 @@ class TestIntegration(TestCase):
         result = self._create_key_pair(key_name=key_name)
 
         # TODO: remove trace
-        pytest.set_trace();
+        pytest.set_trace()
+
         self._check_result_status(result, ResultStatus, ResultStatus.SUCCESS)
 
         # Check UUID value for Private key
@@ -922,7 +923,7 @@ class TestIntegration(TestCase):
                                   ResultStatus.SUCCESS)
 
         # TODO: Remove trace
-        pytest.setTrace()
+        pytest.set_trace()
 
         self._check_uuid(priv_key_result.uuid.value, str)
 
