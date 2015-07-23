@@ -728,7 +728,7 @@ class TestIntegration(TestCase):
         """
         pub_key_object_type = ObjectType.PUBLIC_KEY
         mask_flags = [CryptographicUsageMask.ENCRYPT,
-                      CryptographicUsageM ask.DECRYPT]
+                      CryptographicUsageMask.DECRYPT]
         attribute_type = AttributeType.CRYPTOGRAPHIC_USAGE_MASK
         usage_mask = self.attr_factory.create_attribute(attribute_type,
                                                         mask_flags)
