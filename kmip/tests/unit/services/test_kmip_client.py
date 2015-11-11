@@ -61,6 +61,10 @@ from kmip.services.results import RekeyKeyPairResult
 
 import kmip.core.utils as utils
 
+import mock
+
+import socket
+import ssl
 
 class TestKMIPClient(TestCase):
 
@@ -500,6 +504,40 @@ class TestKMIPClient(TestCase):
         self.assertIsInstance(result, GetAttributeListResult)
         self.assertEqual(uid, result.uid)
         self.assertEqual(names, result.names)
+
+    def test_host_list_import_string(self):
+        host_list_string = '127.0.0.1,128.244.123.1,  128.244.15.154'
+        host_list_expected = ['127.0.0.1', '128.244.123.1', '128.244.15.154']
+
+        self.client._set_variables(host_list=host_list_string,
+                                   port=None, keyfile=None, certfile=None,
+                                   cert_reqs=None, ssl_version=None,
+                                   ca_certs=None,
+                                   do_handshake_on_connect=False,
+                                   suppress_ragged_eofs=None, username=None,
+                                   password=None, timeout=None)
+        self.assertEqual(host_list_expected, self.client.host_list)
+
+    def test_host_list_import_none(self):
+        host_list_string = None
+        host_list_expected = ['127.0.0.1', '128.244.123.1', '128.244.15.154']
+
+        self.client._set_variables(host_list=host_list_string,
+                                   port=None, keyfile=None, certfile=None,
+                                   cert_reqs=None, ssl_version=None,
+                                   ca_certs=None,
+                                   do_handshake_on_connect=False,
+                                   suppress_ragged_eofs=None, username=None,
+                                   password=None, timeout=None)
+        self.assertEqual(host_list_expected, self.client.host_list)
+
+    @mock.patch('socket.socket.connect')
+    def test_timeout_all_hosts(self, mock_socket_timeout):
+        mock_socket_timeout.return_value = socket.timeout
+        try:
+            self.client.open()
+        except ssl.SSLError as e:
+            self.assertIsInstance(e, ssl.SSLError)
 
 
 class TestClientProfileInformation(TestCase):
