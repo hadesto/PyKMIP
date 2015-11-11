@@ -76,7 +76,8 @@ CONFIG_FILE = os.path.normpath(os.path.join(FILE_PATH, '../kmipconfig.ini'))
 
 class KMIPProxy(KMIP):
 
-    def __init__(self, host=None, port=None, keyfile=None, certfile=None,
+    def __init__(self, host_list=None, port=None, keyfile=None,
+                 certfile=None,
                  cert_reqs=None, ssl_version=None, ca_certs=None,
                  do_handshake_on_connect=None,
                  suppress_ragged_eofs=None,
@@ -86,7 +87,7 @@ class KMIPProxy(KMIP):
         self.credential_factory = CredentialFactory()
         self.config = config
 
-        self._set_variables(host, port, keyfile, certfile,
+        self._set_variables(host_list, port, keyfile, certfile,
                             cert_reqs, ssl_version, ca_certs,
                             do_handshake_on_connect, suppress_ragged_eofs,
                             username, password, timeout)
@@ -209,6 +210,50 @@ class KMIPProxy(KMIP):
         self.logger.debug("KMIPProxy suppress_ragged_eofs: {0}".format(
             self.suppress_ragged_eofs))
 
+        self._create_socket(sock)
+        self.protocol = KMIPProtocol(self.socket)
+
+
+
+
+        # Cycle through all available hosts
+        total_hosts = len(self.host_list)
+
+        for x in range(0, total_hosts):
+            if x < (total_hosts-1):
+                self.host = self.host_list[x]
+                self._create_socket(sock)
+                try:
+                    self.socket.connect((self.host, self.port))
+                except ssl.SSLError as e:
+                    self.logger.error("timeout occurred while connecting to "
+                                      "appliance " + self.host)
+                    self.socket.close()
+                    self.socket = None
+                except socket.timeout as e:
+                    self.logger.error("timeout occurred while connecting to "
+                                      "appliance " + self.host)
+                    self.socket.close()
+                    self.socket = None
+            else:
+                try:
+                    self.host = self.host_list[x]
+                    self._create_socket(sock)
+                    self.socket.connect((self.host, self.port))
+                except ssl.SSLError as e:
+                    self.logger.error("Timeout connecting to all hosts. No "
+                                      "hosts available.")
+                    self.socket.close()
+                    self.socket = None
+                    raise e
+                except socket.timeout as e:
+                    self.logger.error("Timeout connecting to all hosts. No "
+                                      "hosts available.")
+                    self.socket.close()
+                    self.socket = None
+                    raise e
+
+    def _create_socket(self, sock):
         self.socket = ssl.wrap_socket(
             sock,
             keyfile=self.keyfile,
@@ -218,15 +263,7 @@ class KMIPProxy(KMIP):
             ca_certs=self.ca_certs,
             do_handshake_on_connect=self.do_handshake_on_connect,
             suppress_ragged_eofs=self.suppress_ragged_eofs)
-        self.protocol = KMIPProtocol(self.socket)
-
         self.socket.settimeout(self.timeout)
-
-        try:
-            self.socket.connect((self.host, self.port))
-        except socket.timeout as e:
-            self.logger.error("timeout occurred while connecting to appliance")
-            raise e
 
     def __del__(self):
         # Close the socket properly, helpful in case close() is not called.
@@ -875,14 +912,21 @@ class KMIPProxy(KMIP):
         response.read(data)
         return response
 
-    def _set_variables(self, host, port, keyfile, certfile,
+    def _set_variables(self, host_list, port, keyfile, certfile,
                        cert_reqs, ssl_version, ca_certs,
                        do_handshake_on_connect, suppress_ragged_eofs,
                        username, password, timeout):
         conf = ConfigHelper()
 
-        self.host = conf.get_valid_value(
-            host, self.config, 'host', conf.DEFAULT_HOST)
+        # TODO: set this to a host list
+        self.host_list_str = conf.get_valid_value(
+            host_list, self.config, 'host_list', conf.DEFAULT_HOST_LIST)
+        self.host_list = self._build_host_list(self.host_list_str)
+
+        if self.host_list[0] is None:
+            self.host = None
+        else:
+            self.host = self.host_list[0]
 
         self.port = int(conf.get_valid_value(
             port, self.config, 'port', conf.DEFAULT_PORT))
@@ -930,3 +974,19 @@ class KMIPProxy(KMIP):
                 "resetting to safe default of {0} seconds".format(
                     conf.DEFAULT_TIMEOUT))
             self.timeout = conf.DEFAULT_TIMEOUT
+
+    def _build_host_list(self, host_list_str):
+        '''
+        This internal function takes the host string from the config file
+        and turns it into a list
+        :return: LIST host list
+        '''
+        if isinstance(host_list_str, str):
+            host_list = host_list_str.replace(' ', '').split(',')
+        elif host_list_str is None:
+            host_list = [None]
+        else:
+            raise TypeError("Unrecognized variable type provided for host "
+                            "list string. 'String' type expected but '" + type(
+                                host_list_str) + "' received")
+        return host_list
