@@ -57,7 +57,7 @@ class TestProxyKmipClient(testtools.TestCase):
         Test that a ProxyKmipClient can be constructed with valid arguments.
         """
         ProxyKmipClient(
-            host_list='127.0.0.1',
+            host_names='127.0.0.1',
             port=5696,
             cert='/example/path/to/cert',
             key='/example/path/to/key',
