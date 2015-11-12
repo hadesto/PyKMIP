@@ -987,6 +987,6 @@ class KMIPProxy(KMIP):
             host_list = [None]
         else:
             raise TypeError("Unrecognized variable type provided for host "
-                            "list string. 'String' type expected but '" + type(
-                                host_list_str) + "' received")
+                            "list string. 'String' type expected but '" +
+                            str(type(host_list_str)) + "' received")
         return host_list
