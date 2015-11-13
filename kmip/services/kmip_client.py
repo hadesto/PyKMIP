@@ -209,10 +209,6 @@ class KMIPProxy(KMIP):
         self.logger.debug("KMIPProxy suppress_ragged_eofs: {0}".format(
             self.suppress_ragged_eofs))
 
-
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._create_socket(sock)
-
         self.protocol = KMIPProtocol(self.socket)
 
 
@@ -222,10 +218,11 @@ class KMIPProxy(KMIP):
         total_hosts = len(self.host_list)
 
         for x in range(0, total_hosts):
+            self.host = self.host_list[x]
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._create_socket(sock)
+
             if x < (total_hosts-1):
-                self.host = self.host_list[x]
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self._create_socket(sock)
                 try:
                     self.socket.connect((self.host, self.port))
                 except ssl.SSLError as e:
@@ -240,9 +237,6 @@ class KMIPProxy(KMIP):
                     self.socket = None
             else:
                 try:
-                    self.host = self.host_list[x]
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    self._create_socket(sock)
                     self.socket.connect((self.host, self.port))
                 except ssl.SSLError as e:
                     self.logger.error("Timeout connecting to all hosts. No "
