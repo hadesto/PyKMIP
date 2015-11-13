@@ -194,7 +194,6 @@ class KMIPProxy(KMIP):
                 self.is_authentication_suite_supported(authentication_suite))
 
     def open(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.logger.debug("KMIPProxy keyfile: {0}".format(self.keyfile))
         self.logger.debug("KMIPProxy certfile: {0}".format(self.certfile))
@@ -210,7 +209,10 @@ class KMIPProxy(KMIP):
         self.logger.debug("KMIPProxy suppress_ragged_eofs: {0}".format(
             self.suppress_ragged_eofs))
 
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._create_socket(sock)
+
         self.protocol = KMIPProtocol(self.socket)
 
 
@@ -222,6 +224,7 @@ class KMIPProxy(KMIP):
         for x in range(0, total_hosts):
             if x < (total_hosts-1):
                 self.host = self.host_list[x]
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self._create_socket(sock)
                 try:
                     self.socket.connect((self.host, self.port))
@@ -230,7 +233,7 @@ class KMIPProxy(KMIP):
                                       "appliance " + self.host)
                     self.socket.close()
                     self.socket = None
-                except socket.timeout as e:
+                except socket.error as e:
                     self.logger.error("timeout occurred while connecting to "
                                       "appliance " + self.host)
                     self.socket.close()
@@ -238,6 +241,7 @@ class KMIPProxy(KMIP):
             else:
                 try:
                     self.host = self.host_list[x]
+                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     self._create_socket(sock)
                     self.socket.connect((self.host, self.port))
                 except ssl.SSLError as e:
@@ -246,7 +250,7 @@ class KMIPProxy(KMIP):
                     self.socket.close()
                     self.socket = None
                     raise e
-                except socket.timeout as e:
+                except socket.error as e:
                     self.logger.error("Timeout connecting to all hosts. No "
                                       "hosts available.")
                     self.socket.close()
