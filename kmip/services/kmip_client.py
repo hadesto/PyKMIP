@@ -209,7 +209,7 @@ class KMIPProxy(KMIP):
         self.logger.debug("KMIPProxy suppress_ragged_eofs: {0}".format(
             self.suppress_ragged_eofs))
 
-        self.protocol = KMIPProtocol(self.socket)
+
 
 
 
@@ -221,6 +221,7 @@ class KMIPProxy(KMIP):
             self.host = self.host_list[x]
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._create_socket(sock)
+            self.protocol = KMIPProtocol(self.socket)
 
             if x < (total_hosts-1):
                 try:
