@@ -983,8 +983,6 @@ class KMIPProxy(KMIP):
             host_list = host_list_str.replace(' ', '').split(',')
         elif host_list_str is None:
             host_list = [None]
-        elif isinstance(host_list_str, list):
-            host_list = host_list_str
         else:
             raise TypeError("Unrecognized variable type provided for host "
                             "list string. 'String' type expected but '" +
