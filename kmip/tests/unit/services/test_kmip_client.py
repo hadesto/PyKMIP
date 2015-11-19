@@ -538,6 +538,8 @@ class TestKMIPClient(TestCase):
             self.client.open()
         except ssl.SSLError as e:
             self.assertIsInstance(e, ssl.SSLError)
+        else:
+            self.client.close()
 
 
 class TestClientProfileInformation(TestCase):
