@@ -42,7 +42,7 @@ class ProxyKmipClient(api.KmipClient):
     Like the KMIPProxy, the ProxyKmipClient is not thread-safe.
     """
     def __init__(self,
-                 host_names=None,
+                 hostname=None,
                  port=None,
                  cert=None,
                  key=None,
@@ -85,7 +85,7 @@ class ProxyKmipClient(api.KmipClient):
 
         # TODO (peter-hamilton) Consider adding validation checks for inputs.
         self.proxy = KMIPProxy(
-            host_list=host_names,
+            host=hostname,
             port=port,
             certfile=cert,
             keyfile=key,

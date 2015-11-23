@@ -30,7 +30,7 @@ CONFIG_FILE = [
 
 class ConfigHelper(object):
     NONE_VALUE = 'None'
-    DEFAULT_HOST_LIST = "127.0.0.1"
+    DEFAULT_HOST = "127.0.0.1"
     DEFAULT_PORT = 5696
     DEFAULT_CERTFILE = os.path.normpath(os.path.join(
         FILE_PATH, '../demos/certs/server.crt'))

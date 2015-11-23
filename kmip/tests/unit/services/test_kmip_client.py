@@ -509,7 +509,7 @@ class TestKMIPClient(TestCase):
         host_list_string = '127.0.0.1,128.244.123.1,  128.244.15.154'
         host_list_expected = ['127.0.0.1', '128.244.123.1', '128.244.15.154']
 
-        self.client._set_variables(host_list=host_list_string,
+        self.client._set_variables(host=host_list_string,
                                    port=None, keyfile=None, certfile=None,
                                    cert_reqs=None, ssl_version=None,
                                    ca_certs=None,
@@ -522,7 +522,7 @@ class TestKMIPClient(TestCase):
         host_list_string = None
         host_list_expected = ['127.0.0.1', '128.244.123.1', '128.244.15.154']
 
-        self.client._set_variables(host_list=host_list_string,
+        self.client._set_variables(host=host_list_string,
                                    port=None, keyfile=None, certfile=None,
                                    cert_reqs=None, ssl_version=None,
                                    ca_certs=None,
