@@ -520,7 +520,7 @@ class TestKMIPClient(TestCase):
 
     def test_host_list_import_none(self):
         host_list_string = None
-        host_list_expected = ['127.0.0.1', '128.244.123.1', '128.244.15.154']
+        host_list_expected = ['127.0.0.1']
 
         self.client._set_variables(host=host_list_string,
                                    port=None, keyfile=None, certfile=None,
