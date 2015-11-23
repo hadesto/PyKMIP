@@ -209,48 +209,21 @@ class KMIPProxy(KMIP):
         self.logger.debug("KMIPProxy suppress_ragged_eofs: {0}".format(
             self.suppress_ragged_eofs))
 
-
-
-
-
-
-        # Cycle through all available hosts
-        total_hosts = len(self.host_list)
-
-        for x in range(0, total_hosts):
-            self.host = self.host_list[x]
+        for host in self.host_list:
+            self.host = host
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._create_socket(sock)
             self.protocol = KMIPProtocol(self.socket)
-
-            if x < (total_hosts-1):
-                try:
-                    self.socket.connect((self.host, self.port))
-                except ssl.SSLError as e:
-                    self.logger.error("timeout occurred while connecting to "
-                                      "appliance " + self.host)
-                    self.socket.close()
-                    self.socket = None
-                except socket.error as e:
-                    self.logger.error("timeout occurred while connecting to "
-                                      "appliance " + self.host)
-                    self.socket.close()
-                    self.socket = None
+            try:
+                self.socket.connect((self.host, self.port))
+            except Exception as e:
+                self.logger.error("An error occurred while connecting to "
+                                  "appliance " + self.host)
+                self.socket.close()
+                self.socket = None
             else:
-                try:
-                    self.socket.connect((self.host, self.port))
-                except ssl.SSLError as e:
-                    self.logger.error("Timeout connecting to all hosts. No "
-                                      "hosts available.")
-                    self.socket.close()
-                    self.socket = None
-                    raise e
-                except socket.error as e:
-                    self.logger.error("Timeout connecting to all hosts. No "
-                                      "hosts available.")
-                    self.socket.close()
-                    self.socket = None
-                    raise e
+                return
+        raise e
 
     def _create_socket(self, sock):
         self.socket = ssl.wrap_socket(
