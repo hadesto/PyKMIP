@@ -895,10 +895,7 @@ class KMIPProxy(KMIP):
             host, self.config, 'host', conf.DEFAULT_HOST)
         self.host_list = self._build_host_list(self.host_list_str)
 
-        if self.host_list[0] is None:
-            self.host = None
-        else:
-            self.host = self.host_list[0]
+        self.host = self.host_list[0]
 
         self.port = int(conf.get_valid_value(
             port, self.config, 'port', conf.DEFAULT_PORT))
