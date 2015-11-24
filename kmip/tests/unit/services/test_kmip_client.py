@@ -561,6 +561,10 @@ class TestKMIPClient(TestCase):
         else:
             self.client.close()
 
+    @mock.patch('socket.socket.connect')
+    def test_connection_success(self, mock_socket_connect):
+        mock_socket_connect.return_value = None
+        self.client.open()
 
 
 class TestClientProfileInformation(TestCase):
