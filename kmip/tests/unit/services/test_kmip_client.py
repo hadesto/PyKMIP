@@ -537,20 +537,13 @@ class TestKMIPClient(TestCase):
         host = 1337
         expected_error = TypeError
 
-        self.client._set_variables(host=host,
-                                   port=None, keyfile=None, certfile=None,
-                                   cert_reqs=None, ssl_version=None,
-                                   ca_certs=None,
-                                   do_handshake_on_connect=False,
-                                   suppress_ragged_eofs=None, username=None,
-                                   password=None, timeout=None)
-        pytest.raises(expected_error, self.client._set_variables(host=host,
-                      port=None, keyfile=None, certfile=None,
-                      cert_reqs=None, ssl_version=None,
-                      ca_certs=None,
-                      do_handshake_on_connect=False,
-                      suppress_ragged_eofs=None, username=None,
-                      password=None, timeout=None))
+        kwargs = { 'host':host, 'port':None, 'keyfile':None, 'certfile':None,
+              'cert_reqs':None, 'ssl_version':None, 'ca_certs':None,
+              'do_handshake_on_connect':False, 'suppress_ragged_eofs':None,
+              'username':None, 'password':None, 'timeout':None}
+
+        self.assertRaises(expected_error, self.client._set_variables,
+            **kwargs)
 
 
 
