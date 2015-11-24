@@ -17,6 +17,8 @@ from testtools import TestCase
 
 from kmip.core.attributes import PrivateKeyUniqueIdentifier
 
+from kmip.core.config_helper import ConfigHelper
+
 from kmip.core.enums import AuthenticationSuite
 from kmip.core.enums import ConformanceClause
 from kmip.core.enums import CredentialType
@@ -62,8 +64,6 @@ from kmip.services.results import RekeyKeyPairResult
 import kmip.core.utils as utils
 
 import mock
-
-import pytest
 
 import socket
 import ssl
@@ -508,8 +508,8 @@ class TestKMIPClient(TestCase):
         self.assertEqual(names, result.names)
 
     def test_host_list_import_string(self):
-        host_list_string = '127.0.0.1,128.244.123.1,  128.244.15.154'
-        host_list_expected = ['127.0.0.1', '128.244.123.1', '128.244.15.154']
+        host_list_string = '127.0.0.1,127.0.0.3,  127.0.0.5'
+        host_list_expected = ['127.0.0.1', '127.0.0.3', '127.0.0.5']
 
         self.client._set_variables(host=host_list_string,
                                    port=None, keyfile=None, certfile=None,
@@ -520,9 +520,16 @@ class TestKMIPClient(TestCase):
                                    password=None, timeout=None)
         self.assertEqual(host_list_expected, self.client.host_list)
 
-    def test_host_list_import_none(self):
+    def test_host_list_set_none(self):
+        conf = ConfigHelper()
+
         host_list_string = None
-        host_list_expected = ['127.0.0.1']
+        host_list_from_config_file = conf.get_valid_value(None, 'client',
+                                                          'host',
+                                                          conf.DEFAULT_HOST)
+
+        host_list_expected = self.client.\
+            _build_host_list(host_list_from_config_file)
 
         self.client._set_variables(host=host_list_string,
                                    port=None, keyfile=None, certfile=None,
@@ -549,11 +556,13 @@ class TestKMIPClient(TestCase):
 
 
     @mock.patch('socket.socket.connect')
-    def test_timeout_all_hosts(self, mock_socket_timeout):
-        mock_socket_timeout.return_value = socket.timeout
+    @mock.patch('ssl.SSLSocket.gettimeout')
+    def test_timeout_all_hosts(self, mock_ssl_timeout, mock_connect_return):
+        mock_ssl_timeout.return_value = 1
+        mock_connect_return.return_value = socket.timeout
         try:
             self.client.open()
-        except ssl.SSLError as e:
+        except Exception as e:
             #TODO: once the exception is properly defined in the
             # kmip_client.py file this test needs to change to reflect that.
             self.assertIsInstance(e, Exception)
@@ -561,10 +570,12 @@ class TestKMIPClient(TestCase):
         else:
             self.client.close()
 
-    @mock.patch('socket.socket.connect')
+    @mock.patch('ssl.SSLSocket.connect')
     def test_connection_success(self, mock_socket_connect):
         mock_socket_connect.return_value = None
         self.client.open()
+        print(mock_socket_connect.called)
+
 
 
 class TestClientProfileInformation(TestCase):
