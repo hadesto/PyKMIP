@@ -63,6 +63,8 @@ import kmip.core.utils as utils
 
 import mock
 
+import pytest
+
 import socket
 import ssl
 
@@ -530,6 +532,28 @@ class TestKMIPClient(TestCase):
                                    suppress_ragged_eofs=None, username=None,
                                    password=None, timeout=None)
         self.assertEqual(host_list_expected, self.client.host_list)
+
+    def test_host_is_invalid_input(self):
+        host = 1337
+        expected_error = TypeError
+
+        self.client._set_variables(host=host,
+                                   port=None, keyfile=None, certfile=None,
+                                   cert_reqs=None, ssl_version=None,
+                                   ca_certs=None,
+                                   do_handshake_on_connect=False,
+                                   suppress_ragged_eofs=None, username=None,
+                                   password=None, timeout=None)
+        pytest.raises(expected_error, self.client._set_variables(host=host,
+                      port=None, keyfile=None, certfile=None,
+                      cert_reqs=None, ssl_version=None,
+                      ca_certs=None,
+                      do_handshake_on_connect=False,
+                      suppress_ragged_eofs=None, username=None,
+                      password=None, timeout=None))
+
+
+
 
     @mock.patch('socket.socket.connect')
     def test_timeout_all_hosts(self, mock_socket_timeout):
