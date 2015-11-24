@@ -537,9 +537,13 @@ class TestKMIPClient(TestCase):
         try:
             self.client.open()
         except ssl.SSLError as e:
-            self.assertIsInstance(e, ssl.SSLError)
+            #TODO: once the exception is properly defined in the
+            # kmip_client.py file this test needs to change to reflect that.
+            self.assertIsInstance(e, Exception)
+            self.client.close()
         else:
             self.client.close()
+
 
 
 class TestClientProfileInformation(TestCase):
