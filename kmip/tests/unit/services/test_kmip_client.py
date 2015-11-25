@@ -587,7 +587,7 @@ class TestKMIPClient(TestCase):
         try:
             self.client.open()
         except Exception as e:
-            #TODO: once the exception is properly defined in the
+            # TODO: once the exception is properly defined in the
             # kmip_client.py file this test needs to change to reflect that.
             self.assertIsInstance(e, Exception)
             self.client.close()

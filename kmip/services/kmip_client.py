@@ -893,7 +893,7 @@ class KMIPProxy(KMIP):
         # TODO: set this to a host list
         self.host_list_str = conf.get_valid_value(
             host, self.config, 'host', conf.DEFAULT_HOST)
-        
+
         self.host_list = self._build_host_list(self.host_list_str)
 
         self.host = self.host_list[0]
