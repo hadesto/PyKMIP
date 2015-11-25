@@ -512,7 +512,6 @@ class TestKMIPClient(TestCase):
         This test verifies that the client can process a string with
         multiple IP addresses specified in it. It also tests that
         unnecessary spaces are ignored.
-        :return:
         """
 
         host_list_string = '127.0.0.1,127.0.0.3,  127.0.0.5'
@@ -527,37 +526,10 @@ class TestKMIPClient(TestCase):
                                    password=None, timeout=None)
         self.assertEqual(host_list_expected, self.client.host_list)
 
-    def test_host_list_set_none(self):
-        """
-        This tests verifies that if no hosts are specified when creating a
-        client object the KMIPProxy class will default to values in the
-        configuration file
-        :return:
-        """
-        conf = ConfigHelper()
-
-        host_list_string = None
-        host_list_from_config_file = conf.get_valid_value(None, 'client',
-                                                          'host',
-                                                          conf.DEFAULT_HOST)
-
-        host_list_expected = self.client.\
-            _build_host_list(host_list_from_config_file)
-
-        self.client._set_variables(host=host_list_string,
-                                   port=None, keyfile=None, certfile=None,
-                                   cert_reqs=None, ssl_version=None,
-                                   ca_certs=None,
-                                   do_handshake_on_connect=False,
-                                   suppress_ragged_eofs=None, username=None,
-                                   password=None, timeout=None)
-        self.assertEqual(host_list_expected, self.client.host_list)
-
     def test_host_is_invalid_input(self):
         """
         This test verifies that invalid values are not processed when
         setting the client object parameters
-        :return:
         """
         host = 1337
         expected_error = TypeError
@@ -577,9 +549,6 @@ class TestKMIPClient(TestCase):
         """
         This test verifies that the client will throw an exception if no
         hosts are available for connection.
-        :param mock_ssl_timeout:
-        :param mock_connect_return:
-        :return:
         """
 
         mock_ssl_timeout.return_value = 1
@@ -593,18 +562,6 @@ class TestKMIPClient(TestCase):
             self.client.close()
         else:
             self.client.close()
-
-    @mock.patch('ssl.SSLSocket.connect')
-    def test_connection_success(self, mock_socket_connect):
-        """
-        This test verifies that the library can correctly open a socket
-        connection
-        :param mock_socket_connect:
-        :return:
-        """
-        mock_socket_connect.return_value = None
-        self.client.open()
-        print(mock_socket_connect.called)
 
 
 class TestClientProfileInformation(TestCase):

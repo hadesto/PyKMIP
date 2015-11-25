@@ -936,8 +936,8 @@ class KMIPProxy(KMIP):
         self.password = conf.get_valid_value(
             password, self.config, 'password', conf.DEFAULT_PASSWORD)
 
-        self.timeout = conf.get_valid_value(
-            timeout, self.config, 'timeout', conf.DEFAULT_TIMEOUT)
+        self.timeout = int(conf.get_valid_value(
+            timeout, self.config, 'timeout', conf.DEFAULT_TIMEOUT))
         if self.timeout < 0:
             self.logger.warning(
                 "Negative timeout value specified, "
