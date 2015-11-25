@@ -17,8 +17,6 @@ from testtools import TestCase
 
 from kmip.core.attributes import PrivateKeyUniqueIdentifier
 
-from kmip.core.config_helper import ConfigHelper
-
 from kmip.core.enums import AuthenticationSuite
 from kmip.core.enums import ConformanceClause
 from kmip.core.enums import CredentialType
